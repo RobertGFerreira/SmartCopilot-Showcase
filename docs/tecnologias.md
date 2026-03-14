@@ -15,10 +15,11 @@ O Stack Tecnológico do SmartCopilot foi orquestrado para suportar avaliações 
 
 ## Backend e Banco de Dados
 
-- **Supabase (Backend-as-a-Service)**: Nuvem unificada baseada no pacote *Open Source*.
-  - **PostgreSQL**: Sólido gerenciamento na nuvem para manter contas autorizadas e rastrear tempos consumidos em abas freemium (TimeBank).
-  - **Supabase Edge Functions**: Rotinas serverless acionadas pelos celulares esparsos para computar encerramentos/sincronizações.
-- **SQLite / SharedPreferences**: Local Storage. Permite que o "Parser" analise um card de viagem mesmo se o motorista rodar em "Sombra Urbana" com rede H+ ou 3G caindo, e depois suba isso ao repo online.
+- **Firebase (Backend-as-a-Service)**: Nuvem unificada do Google.
+  - **Cloud Firestore**: Banco de dados NoSQL sólido para manter contas autorizadas, suporte (tickets) e rastrear tempos consumidos em abas freemium (TimeBank).
+  - **Firebase Auth**: Sistema robusto de autenticação.
+  - **Firebase Cloud Functions**: (Planejado) Rotinas serverless acionadas pelos celulares esparsos para computar encerramentos/sincronizações avançadas.
+- **SharedPreferences**: Local Storage. Permite que o "Parser" analise um card de viagem mesmo se o motorista rodar em "Sombra Urbana" com rede H+ ou 3G caindo, salvando configurações e históricos temporários.
 
 ## Bibliotecas e Serviços Especializados
 

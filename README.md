@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/Frontend-Flutter_3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter" />
   <img src="https://img.shields.io/badge/Native_Core-Kotlin_&_Java-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin" />
   <img src="https://img.shields.io/badge/OCR-ML_Kit-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="ML Kit" />
-  <img src="https://img.shields.io/badge/Backend-Supabase_&_PostgreSQL-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase Backend" />
+  <img src="https://img.shields.io/badge/Backend-Firebase_&_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase Backend" />
 </p>
 
 <br>
@@ -69,8 +69,8 @@ A arquitetura do SmartCopilot foi desenhada para operação **Zero-Latency/Offli
 *   **Gestão de Estado Reativa:** Integração sem atrito com o Kotlin Bridge para comunicar a detecção de chamadas diretamente aos Controllers Dart.
 
 ### 🧠 Backend, Analytics & Freemium Edge
-*   **Assinaturas e Controle de Tempo:** Motor distribuído de controle "Freemium" que provisiona horas de funcionamento para testes controlados via Supabase Edge Functions.
-*   **Metrificação (TimeBankController):** Monitoramento persistente de sessões e engajamento.
+*   **Assinaturas e Controle de Tempo:** Motor distribuído de controle "Freemium" que provisiona horas de funcionamento para testes controlados via Firebase Cloud Functions e Firestore.
+*   **Metrificação (TimeBankController):** Monitoramento persistente de sessões e engajamento sincronizado via Firebase.
 
 ---
 
@@ -116,9 +116,9 @@ graph TD
     end
 
     subgraph Backend [Backend & Cloud]
-        Edge[Supabase Edge Functions]
-        DB[(PostgreSQL TimeBank)]
-        Storage[Offline Storage SQLite]
+        Edge[Firebase Cloud Functions]
+        DB[(Cloud Firestore)]
+        Storage[Offline Storage SharedPreferences]
     end
 
     ACC --"Extracts Screen Data (µs)"--> Dart
@@ -139,8 +139,8 @@ graph TD
 | :--- | :--- | :--- |
 | **Cross-Platform** | **Flutter** | Material 3, MethodChannels, Dart 3 |
 | **Core Nativo** | **Kotlin / Java** | Android AccessibilityService, Overlay Services, ML Kit |
-| **Local Storage** | **SharedPrefs/SQLite** | Persistência ultra-rápida offline-first |
-| **Backend & Gen** | **Supabase** | Edge Functions, PostgreSQL remote |
+| **Local Storage** | **SharedPreferences** | Persistência ultra-rápida offline-first |
+| **Backend & Gen** | **Firebase** | Cloud Functions, Firestore, Firebase Auth |
 
 </div>
 
@@ -152,7 +152,7 @@ Para explorar mais a fundo a arquitetura e as soluções de engenharia do SmartC
 
 - [Diferenciais Técnicos](docs/diferenciais.md): Detalhes sobre a arquitetura híbrida, overlay nativo e resiliência offline.
 - [Ferramentas Utilizadas](docs/ferramentas.md): Ecossistema de desenvolvimento, DevOps, QA e Analytics.
-- [Tecnologias do Sistema](docs/tecnologias.md): Stack detalhada do aplicativo (Dart/Kotlin) e backend (Supabase).
+- [Tecnologias do Sistema](docs/tecnologias.md): Stack detalhada do aplicativo (Dart/Kotlin) e backend (Firebase).
 
 ---
 
