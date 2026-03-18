@@ -131,14 +131,18 @@ graph TD
 
 ## 🚀 Roadmap
 
-### Automação de Corridas
-- [ ] **Auto-Aceite (`ACTION_CLICK`):** Aceitar instantaneamente corridas com score 10/10 no algoritmo
-- [ ] **Auto-Recusa Inteligente:** Dispensar corridas ruins sem interação do motorista
-- [ ] **Expansão de Parsers:** Suporte a inDrive e variações regionais de layout
+### 📋 Histórico & Controle de Corridas
+- [ ] **Captura de Print da Corrida:** Salvar automaticamente um screenshot da oferta recebida junto ao registro no histórico — evidência visual de cada solicitação aceita.
+- [ ] **Controle de Corridas Aceitas:** Painel de gestão das corridas realizadas com status, métricas e linha do tempo da sessão.
+- [ ] **Validação de Valor da Corrida:** Cruzar o valor mostrado na oferta com o valor efetivamente cobrado ao fim da corrida — detectar automaticamente discrepâncias e cobranças incorretas.
 
-### Plataforma & Monetização
+### 🗺️ Inteligência Geográfica
+- [ ] **Cadastro Avançado de Áreas de Risco:** Interface aprimorada para registro de zonas problemáticas com descrição, horário de risco, categoria (assalto, enchente, trânsito) e histórico de ocorrências por polígono.
+- [ ] **Insights de Locais e Horários:** Relatórios automáticos sobre os melhores e piores pontos de partida, faixas de horário mais rentáveis e padrões de demanda por região — gerados a partir do próprio histórico do motorista.
+
+### 🔧 Plataforma
+- [ ] **Expansão de Parsers:** Suporte a inDrive e variações regionais de layout do Uber e 99
 - [ ] **Gateway de Pagamento In-App:** Assinaturas com billing nativo Google Play
-- [ ] **Fleet Analytics:** Dashboard Web (Flutter Web) para frotistas
 
 ---
 
