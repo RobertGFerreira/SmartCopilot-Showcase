@@ -1,28 +1,37 @@
 # Tecnologias do SmartCopilot
 
-O Stack Tecnológico do SmartCopilot foi orquestrado para suportar avaliações assíncronas hiper-rápidas, e persistência robusta local, garantindo não interferência no tráfego de dados sensíveis da corrida real.
+O stack tecnológico do SmartCopilot foi orquestrado para suportar avaliações assíncronas em microssegundos e persistência robusta local, garantindo operação completa mesmo sem conectividade de rede.
 
 ## Core Multi-Plataforma
 
-- **Dart (Flutter 3.x)**: O grande cérebro do UI e estado da aplicação principal, provendo a fluidez de 60/120Hz aos Floating Widgets (M3) e o ciclo de filtragem de motoristas (calculadoras de Reais por Quilômetros e Reais por Hora).
+- **Dart (Flutter 3.x):** O motor do UI e estado da aplicação. Provê fluidez de 60/120Hz nos Floating Widgets (Material 3) e o ciclo completo de avaliação de corridas — cálculo de R$/km, R$/hora, semáforo de rentabilidade e filtros de destino.
 
 ## Core Android Nativo
 
-- **Kotlin / Java**: Essenciais para acesso subjacente em domínios não cobertos facilmente por plataformas híbridas.
-  - *Accessibility Services*: Acessado em Kotlin nativamente para serialização rápida da tela e envio na *Bridge*.
-  - *System Alert Window*: Camada responsável pelo "desenho" físico da janela do flutter acima dos demais aplicativos do sistema android de forma nativa.
-  - *Foreground Services*: Estabilização técnica e uso pontual de Battery Wakelocks em Kotlin.
+- **Kotlin:** Essencial para acesso a domínios não cobertos por plataformas híbridas.
+  - *Accessibility Services:* Monitoramento da árvore de elementos dos apps de transporte com lookup de pacote em O(1) via `HashSet`.
+  - *System Alert Window:* Camada responsável pelo desenho físico da janela Flutter acima dos demais apps do sistema Android.
+  - *Foreground Services + Wakelock:* Estabilização técnica para operação contínua durante plantões longos, resistente ao kill de OEMs agressivas (Xiaomi, Samsung, Motorola).
 
-## Backend e Banco de Dados
+## Banco de Dados Local
 
-- **Firebase (Backend-as-a-Service)**: Nuvem unificada do Google.
-  - **Cloud Firestore**: Banco de dados NoSQL sólido para manter contas autorizadas, suporte (tickets) e rastrear tempos consumidos em abas freemium (TimeBank).
-  - **Firebase Auth**: Sistema robusto de autenticação.
-  - **Firebase Cloud Functions**: (Planejado) Rotinas serverless acionadas pelos celulares esparsos para computar encerramentos/sincronizações avançadas.
-- **SharedPreferences**: Local Storage. Permite que o "Parser" analise um card de viagem mesmo se o motorista rodar em "Sombra Urbana" com rede H+ ou 3G caindo, salvando configurações e históricos temporários.
+- **Isar:** Banco de dados NoSQL local de alta performance. Utilizado para persistir histórico de corridas, configurações do overlay, parâmetros do semáforo e a fila de operações pendentes do Write-Ahead Log (WAL).
+- **SharedPreferences:** Persistência ultra-rápida de estado de sessão, posição do overlay na tela e flags de onboarding — ideal para leituras síncronas na inicialização.
 
-## Bibliotecas e Serviços Especializados
+## Backend e Nuvem
 
-- **Google ML Kit (Visão Computacional)**: Integração nativa de modelos robustos *On-Device Text Recognition*, permitindo ao Dart processar prints passados por bytearray do Kotlin numa segunda camada de resiliência.
-- **Provider (Gerência de Estado)**: Injeção de dependências e escuta de Models centralizados.
-- **Permission Handler**: Componente de front para manusear as elevadas restrições (Permissões Especiais) do Android moderno que o app demanda.
+- **Firebase (Backend-as-a-Service):**
+  - **Cloud Firestore:** Banco de dados NoSQL para contas autorizadas, controle de sessões freemium (TimeBank) e histórico de corridas sincronizado.
+  - **Firebase Auth:** Autenticação com suporte a Google Sign-In e grace period offline.
+  - **Firebase Cloud Functions:** *(Planejado)* Rotinas serverless para validação de sessões e sincronizações avançadas.
+
+## Gerência de Estado
+
+- **Riverpod:** Injeção de dependências e gerência de estado reativa. Providers desacoplados com comunicação via `Stream` entre `StateNotifier` — elimina mutação direta entre providers e torna o fluxo de dados previsível e testável.
+
+## Bibliotecas Especializadas
+
+- **Google ML Kit (Visão Computacional):** Modelos de *On-Device Text Recognition* para extração ótica de dados das telas dos apps de transporte. Roda 100% local — zero envio de imagem para servidores externos.
+- **flutter_overlay_window:** Gerenciamento da janela flutuante do overlay sobre outros apps.
+- **flutter_background_service:** Manutenção do serviço de monitoramento em background com proteção anti-kill.
+- **Permission Handler:** Componente de front para gerenciar as permissões especiais que o app demanda no Android moderno (Accessibility, Overlay, Background).

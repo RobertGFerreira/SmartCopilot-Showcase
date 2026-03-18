@@ -5,16 +5,18 @@
 ### *Ecossistema de Otimização Dinâmica para Motoristas de Aplicativo*
 
 <p>
-  Uma solução <b>Natívio-Híbrida Full-Stack</b> que integra Serviços de Acessibilidade nativa Android, Visão Computacional (OCR) <br>
-  e um robusto Backend Inteligente para transformar dados de corridas em ganhos reais em tempo real.
+  Uma solução <b>Nativo-Híbrida Full-Stack</b> que integra Serviços de Acessibilidade nativa Android, Visão Computacional (OCR On-Device) <br>
+  e uma arquitetura orientada a resiliência para transformar dados de corridas em decisões em milissegundos — 100% offline.
 </p>
 
-<!-- Badges Unificadas Front + Back -->
+<!-- Badges -->
 <p>
   <img src="https://img.shields.io/badge/Frontend-Flutter_3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter" />
-  <img src="https://img.shields.io/badge/Native_Core-Kotlin_&_Java-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin" />
-  <img src="https://img.shields.io/badge/OCR-ML_Kit-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="ML Kit" />
-  <img src="https://img.shields.io/badge/Backend-Firebase_&_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase Backend" />
+  <img src="https://img.shields.io/badge/Native_Core-Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin" />
+  <img src="https://img.shields.io/badge/OCR-ML_Kit_On--Device-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="ML Kit" />
+  <img src="https://img.shields.io/badge/Backend-Firebase_&_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
+  <img src="https://img.shields.io/badge/Local_DB-Isar-6B4FBB?style=for-the-badge&logo=databricks&logoColor=white" alt="Isar" />
+  <img src="https://img.shields.io/badge/State-Riverpod-00BCD4?style=for-the-badge&logo=dart&logoColor=white" alt="Riverpod" />
 </p>
 
 <br>
@@ -33,9 +35,9 @@
 
 ## 📖 Sobre o Projeto
 
-Este repositório serve como **Vitrine Técnica (Showcase)** para o **SmartCopilot**, um software proprietário desenvolvido para automatizar a tomada de decisão para motoristas de aplicativos (Uber, 99, Indrive).
+Este repositório é a **Vitrine Técnica (Showcase)** do **SmartCopilot**, um software proprietário desenvolvido para automatizar a tomada de decisão para motoristas de aplicativos (Uber, 99).
 
-O sistema resolve a assimetria de informações enfrentada pelos motoristas na rua, interceptando cards de corrida em microssegundos (via Android Accessibility Services) e fornecendo análises precisas (R$/km, R$/hora, Zonas de Risco) numa interface **Flutter (Material 3)** flutuante e hiper-otimizada.
+O sistema resolve a assimetria de informações enfrentada pelos motoristas em tempo real: intercepta os cards de corrida via Android Accessibility Services, avalia métricas críticas (R$/km, R$/hora, nota do passageiro) e exibe um overlay flutuante com semáforo de rentabilidade — tudo processado **localmente, sem depender de rede**.
 
 > ⚠️ **Nota:** *O código-fonte completo é privado. Este repositório demonstra a arquitetura, funcionalidades, stack tecnológica e o roadmap de desenvolvimento.*
 
@@ -44,153 +46,165 @@ O sistema resolve a assimetria de informações enfrentada pelos motoristas na r
 ## 📸 Visão Geral da Interface
 
 <div align="center">
-  <!-- SUBSTITUA POR SEUS PRINTS REAIS NA PASTA ASSETS -->
-  <img src="assets/dashboard_preview.png" alt="Interface Flutuante (Overlay) do SmartCopilot" width="100%" style="border-radius: 10px; margin-bottom: 20px;">
+  <img src="assets/dashboard_preview.png" alt="Dashboard e Overlay do SmartCopilot" width="100%" style="border-radius: 10px; margin-bottom: 20px;">
   <br>
   <em>Dashboard de controle e overlay inteligente analisando uma corrida em tempo real.</em>
 </div>
 
 ---
 
-## 🆕 Capacidades Recentes & Inovações
+## ⚙️ Capacidades Técnicas & Inovações
 
-A arquitetura do SmartCopilot foi desenhada para operação **Zero-Latency/Offline-First**, garantindo que as avaliações de corrida ocorram localmente em milissegundos.
+### Android Nativo (Kotlin)
 
-### ⚙️ Engenharia Nativa Android (Kotlin)
-*   **Accessibility Service Profundo:** Monitoramento contínuo da árvore de elementos (DOM nativo) de aplicativos de transporte para extrair dados sem afetar a performance do device.
-*   **Overlay Engine Avançado:** Renderização de janelas sobrepostas (System Alert Window) que reagem dinamicamente à tela de fundo.
-*   **Gerenciamento de Energia & Background:** Serviços estabilizados (Foreground Services, Wakelocks) desenhados para não serem "mortos" pelas baterias agressivas das OEMs (Xiaomi, Samsung).
-*   **Fallback Inteligente via ML (OCR):** Quando a árvore de acessibilidade é ofuscada pelas plataformas, o sistema captura a tela e a submete a extração óptica via Google ML Kit On-Device.
+- **Accessibility Service Profundo:** Monitoramento contínuo da árvore de elementos do sistema Android (DOM nativo) dos apps de transporte, com lookup de pacotes em O(1) via `HashSet` para mínimo consumo de CPU.
+- **Roteamento Isolado por Plataforma:** `UberService` e `99Service` são processados por pipelines completamente independentes — uma mudança de layout do Uber não afeta o parser da 99.
+- **Overlay Engine Avançado:** Renderização de janelas sobrepostas (System Alert Window) que reagem dinamicamente à tela do driver app via `flutter_overlay_window`.
+- **Foreground Service + Wakelock:** Proteção ativa contra o gerenciamento agressivo de bateria das OEMs (Xiaomi, Samsung) para garantir monitoramento contínuo em plantões longos.
+- **OCR On-Device como Fallback:** Quando a árvore de acessibilidade é ofuscada por A/B testing das plataformas, o sistema captura a tela e submete ao Google ML Kit — 100% local, zero latência de rede.
 
-### 🎨 Frontend & App Arquitetura (Flutter)
-*   **Motor de Filtros de Alta Performance:** Avaliação instantânea (R$/km, HR) de cada corrida contra dezenas de filtros definidos pelo usuário (Destinos Indesejados, Limite Mínimo, Nota do Passageiro).
-*   **Design System Material 3:** Interface limpa, responsiva e com feedback tátil.
-*   **Modularização Baseada em Features:** Clean Architecture aplicada ao Dart, separando *Core*, *Features* e *Services* para manutenção escalonável.
-*   **Gestão de Estado Reativa:** Integração sem atrito com o Kotlin Bridge para comunicar a detecção de chamadas diretamente aos Controllers Dart.
+### Arquitetura de Software (Flutter / Dart)
 
-### 🧠 Backend, Analytics & Freemium Edge
-*   **Assinaturas e Controle de Tempo:** Motor distribuído de controle "Freemium" que provisiona horas de funcionamento para testes controlados via Firebase Cloud Functions e Firestore.
-*   **Metrificação (TimeBankController):** Monitoramento persistente de sessões e engajamento sincronizado via Firebase.
+- **Strategy Pattern para Parsers:** Cada plataforma tem seu próprio parser (`UberScreenParser`, `App99Parser`) que implementa `BaseRideParser`. Zero acoplamento cruzado. Novos apps (inDrive, etc.) são adicionados sem tocar no código existente.
+- **Cache O(1) no Factory:** `RideParserFactory` mantém instâncias `const` (singleton) com resolução cacheada — zero alocação de objeto por evento de acessibilidade.
+- **Background Isolates para CPU-Bound:** Decode e crop de imagem (`img.decodeImage`, `img.copyCrop`) rodam via `compute()` em background isolate, liberando a main thread para manter 60fps no overlay.
+- **Last-Write-Wins Queue no Orquestrador:** `RideOrchestrator` usa uma fila com capacidade 1 — nunca descarta uma corrida silenciosamente durante a exibição do card atual.
+- **Write-Ahead Log (WAL) Local:** Operações Firebase são persistidas no Isar antes de tentar a rede. Em caso de falha (3G fraco, zona sem sinal), são retentadas automaticamente na próxima sessão — zero perda de dados.
+- **Circuit Breaker de Rede:** Toda chamada Firebase passa por `withNetworkResilience()` com timeout configurável e fallback gracioso, projetado para a realidade de motoristas em áreas de sombra de sinal.
+- **Design System Material 3:** `SemanticColors`, `AppTypeTokens` e `ElevationTokens` como ThemeExtensions — zero cores literais espalhadas pelo código.
+- **Gestão de Estado Reativa com Riverpod:** Providers desacoplados com comunicação via `Stream` entre notifiers — elimina o anti-pattern de mutação cruzada de `StateNotifier`.
 
----
+### Backend & Dados
 
-## 🛡️ Destaques Técnicos & Segurança
-
-### Nativo & Dart
-*   **Integração Plataforma Completa:** Uso avançado de *MethodChannels* e *EventChannels* para bidirecionalidade assíncrona.
-*   **Isolates & Background:** Tarefas pesadas (ex. Parsing de Corridas complexas via Expressões Regulares) rodando fora da UI-Thread (Main Isolate).
-*   **Resiliência a Ofuscação:** Parsers projetados para reagir a variações e Testes A/B na interface do Uber e 99.
-
----
-
-## 🚀 Roadmap e Próximos Passos
-
-O desenvolvimento atual foca na maturidade de Automação para os motoristas, evoluindo de uma ferramenta analítica para uma "Mão Auxiliar".
-
-### 🚗 Automação de Corridas 
-- [ ] **Macro Actions (Auto-Aceite):** Comando nativo de clique programático (`ACTION_CLICK`) para aceitar instantaneamente corridas que atinjam nota 10/10 no algoritmo.
-- [ ] **Auto-Recusa Inteligente:** Fechar e dispensar chamadas péssimas, limpando a tela para aumentar a segurança viária do motorista.
-- [ ] **Expansão de Parsers:** Aumento de precisão OCR para modelos de aparelhos específicos.
-
-### 🔐 Plataforma & Monetização
-- [ ] **Gateway de Pagamento Integrado:** Subscrições in-app habilitadas de forma orgânica.
-- [ ] **Fleet Analytics:** Dashboard remoto via Web (React/Flutter Web) para frotistas que quiserem alugar o sistema.
+- **Firebase Firestore:** Sincronização de sessões freemium (`TimeBankController`), histórico de corridas e configurações do usuário.
+- **Firebase Auth:** Autenticação com Google Sign-In e grace period offline de 24h.
+- **Isar (Local DB):** Banco de dados NoSQL local de alta performance para histórico de corridas, configurações de overlay, parâmetros do semáforo e fila WAL de operações pendentes.
+- **SharedPreferences:** Persistência ultra-rápida de estado de sessão e posição do overlay.
 
 ---
 
-## 🏗️ Arquitetura de Alto Nível (System Design)
-
-Abaixo, a representação simplificada do fluxo de dados e dos módulos do sistema, desenhada para ilustrar a interação entre o Flutter, o Core Nativo do Android e o Backend Serverless, sem expor a lógica restrita.
+## 🏗️ Arquitetura de Alto Nível
 
 ```mermaid
 graph TD
-    subgraph Frontend [Flutter Front-End]
-        UI[Material 3 UI Settings]
-        Dart[Dart Engine & Pipeline]
+    subgraph Native ["Android Native (Kotlin)"]
+        ACC["AccessibilityService\n(HashSet O(1) lookup)"]
+        SS["Screenshot + ML Kit OCR\n(Fallback On-Device)"]
+        FG["Foreground Service\n+ Wakelock"]
     end
 
-    subgraph Native [Android Native Core]
-        ACC[Accessibility Service]
-        Overlay[System Alert Window]
-        ML[ML Kit On-Device]
+    subgraph Dart ["Flutter / Dart Engine"]
+        BRIDGE["AccessibilityBridgeService\n(compute isolate + debounce)"]
+        FACTORY["RideParserFactory\n(cache O(1) · const singletons)"]
+        PARSERS["UberParser ⟂ App99Parser\n(zero cross-coupling)"]
+        ORCH["RideOrchestrator\n(Last-Write-Wins Queue)"]
+        CALC["CalculatorService\n(R$/km · R$/hr · semáforo)"]
+        OVERLAY["OverlayService\n(System Alert Window)"]
     end
 
-    subgraph Backend [Backend & Cloud]
-        Edge[Firebase Cloud Functions]
-        DB[(Cloud Firestore)]
-        Storage[Offline Storage SharedPreferences]
+    subgraph Storage ["Persistência Local"]
+        ISAR[("Isar DB\nCorreidas · Config · WAL")]
+        PREFS["SharedPreferences\nSessão · Posição"]
     end
 
-    ACC --"Extracts Screen Data (µs)"--> Dart
-    Dart --"Renders Ride Overlay"--> Overlay
-    ML --"Fallback OCR (ms)"--> Dart
-    Dart --"Persists Offline"--> Storage
-    Storage --"Syncs Freemium Session"--> Edge
-    Edge <--> DB
+    subgraph Cloud ["Backend Firebase"]
+        AUTH["Firebase Auth"]
+        FS["Cloud Firestore\n(TimeBank · Histórico)"]
+        WAL["SyncQueueService\n(Write-Ahead Log)"]
+    end
+
+    ACC -->|"MethodChannel (µs)"| BRIDGE
+    SS -->|"OCR fallback"| BRIDGE
+    FG --> ACC
+    BRIDGE -->|"compute(parse)"| FACTORY
+    FACTORY --> PARSERS
+    PARSERS --> ORCH
+    ORCH --> CALC
+    CALC --> OVERLAY
+    ORCH --> ISAR
+    WAL -->|"retry on reconnect"| FS
+    ISAR --> WAL
+    AUTH --> FS
 ```
 
 ---
 
-## 🛠️ Stack Tecnológica Completa
+## 🚀 Roadmap
+
+### Automação de Corridas
+- [ ] **Auto-Aceite (`ACTION_CLICK`):** Aceitar instantaneamente corridas com score 10/10 no algoritmo
+- [ ] **Auto-Recusa Inteligente:** Dispensar corridas ruins sem interação do motorista
+- [ ] **Expansão de Parsers:** Suporte a inDrive e variações regionais de layout
+
+### Plataforma & Monetização
+- [ ] **Gateway de Pagamento In-App:** Assinaturas com billing nativo Google Play
+- [ ] **Fleet Analytics:** Dashboard Web (Flutter Web) para frotistas
+
+---
+
+## 🛠️ Stack Tecnológica
 
 <div align="center">
 
-| Categoria | Tecnologias Principais | Detalhes |
+| Categoria | Tecnologia | Aplicação |
 | :--- | :--- | :--- |
-| **Cross-Platform** | **Flutter** | Material 3, MethodChannels, Dart 3 |
-| **Core Nativo** | **Kotlin / Java** | Android AccessibilityService, Overlay Services, ML Kit |
-| **Local Storage** | **SharedPreferences** | Persistência ultra-rápida offline-first |
-| **Backend & Gen** | **Firebase** | Cloud Functions, Firestore, Firebase Auth |
+| **Cross-Platform UI** | Flutter 3.x + Dart 3 | Material 3, overlay engine, 60fps |
+| **Native Core** | Kotlin | AccessibilityService, Foreground Service, Wakelock |
+| **OCR On-Device** | Google ML Kit | Fallback de visão computacional, zero rede |
+| **State Management** | Riverpod | StateNotifier, Provider, Stream desacoplado |
+| **Local Database** | Isar | Corridas, config, WAL de sync pendente |
+| **Fast Storage** | SharedPreferences | Sessão, posição overlay, flags de onboarding |
+| **Backend** | Firebase Firestore + Auth | TimeBank, histórico, autenticação |
+| **Background** | flutter_background_service | Proteção anti-kill em background |
+| **Background Isolates** | Dart `compute()` | Decode/crop de imagem fora da UI thread |
 
 </div>
 
 ---
 
-## 📚 Documentação Técnica Aprofundada
+## 📚 Documentação Técnica
 
-Para explorar mais a fundo a arquitetura e as soluções de engenharia do SmartCopilot, consulte os documentos abaixo:
-
-- [Diferenciais Técnicos](docs/diferenciais.md): Detalhes sobre a arquitetura híbrida, overlay nativo e resiliência offline.
-- [Ferramentas Utilizadas](docs/ferramentas.md): Ecossistema de desenvolvimento, DevOps, QA e Analytics.
-- [Tecnologias do Sistema](docs/tecnologias.md): Stack detalhada do aplicativo (Dart/Kotlin) e backend (Firebase).
+- [Diferenciais Técnicos](docs/diferenciais.md): Arquitetura híbrida, parsers isolados e resiliência offline
+- [Ferramentas Utilizadas](docs/ferramentas.md): Ecossistema de desenvolvimento, DevOps e QA
+- [Tecnologias do Sistema](docs/tecnologias.md): Stack detalhada do app e backend
 
 ---
 
 ## 📄 Licença e Termos de Uso
 
-Este é um software **proprietário**. O código-fonte principal é restrito aos desenvolvedores e proprietários do projeto. Este repositório destina-se apenas a portfólio e demonstração de arquitetura.
+Software **proprietário**. Este repositório destina-se apenas a portfólio e demonstração de arquitetura. O código-fonte principal é restrito.
 
-- **Status do App:** Atualmente em fase de Testes Fechados na Google Play Store. O link da loja será substituído quando o lançamento oficial ocorrer.
-- **Termos e Condições:** A cópia, distribuição não autorizada, comercialização ou engenharia reversa do código-fonte ou dos binários do SmartCopilot é estritamente proibida e passível de medidas legais. O uso do aplicativo está sujeito aos termos aceitos no momento do cadastro.
+- **Status:** Testes fechados na Google Play Store
+- **Proibido:** Cópia, distribuição não autorizada, engenharia reversa ou comercialização do código ou binários
 
 ---
 
 <div align="center">
 
-## 👨💻 Suporte & Contato
+## 👨‍💻 Contato
 
-**Suporte Oficial do App:**
+**Suporte do App:**
 <br>
-<a href="mailto:contato.smartcopilot@gmail.com" target="_blank">
-  <img src="https://img.shields.io/badge/E--mail_Suporte-contato.smartcopilot%40gmail.com-D14836?style=for-the-badge&logo=Gmail&logoColor=white" alt="E-mail de Suporte">
+<a href="mailto:contato.smartcopilot@gmail.com">
+  <img src="https://img.shields.io/badge/E--mail_Suporte-contato.smartcopilot%40gmail.com-D14836?style=for-the-badge&logo=Gmail&logoColor=white">
 </a>
 
 <br><br>
 
-**Robert Ferreira (Desenvolvedor)**
+**Robert Ferreira — Desenvolvedor**
 <br>
-*Engenheiro de Software Full-Stack | Especialista em Mobile Nativo & Cross-Platform*
+*Engenheiro de Software Full-Stack | Mobile Nativo & Cross-Platform*
 
 <br>
 
-<a href="https://www.linkedin.com/in/robert-guilherme-ferreira/" target="_blank">
-  <img src="https://img.shields.io/badge/-LinkedIn-0077B5?style=for-the-badge&logo=Linkedin&logoColor=white" alt="LinkedIn">
+<a href="https://www.linkedin.com/in/robert-guilherme-ferreira/">
+  <img src="https://img.shields.io/badge/-LinkedIn-0077B5?style=for-the-badge&logo=Linkedin&logoColor=white">
 </a>
-<a href="mailto:contato.robferreira@gmail.com" target="_blank">
-  <img src="https://img.shields.io/badge/-Gmail-D14836?style=for-the-badge&logo=Gmail&logoColor=white" alt="Gmail">
+<a href="mailto:contato.robferreira@gmail.com">
+  <img src="https://img.shields.io/badge/-Gmail-D14836?style=for-the-badge&logo=Gmail&logoColor=white">
 </a>
-<a href="https://github.com/RobertGFerreira" target="_blank">
-  <img src="https://img.shields.io/badge/-Portfolio-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
+<a href="https://github.com/RobertGFerreira">
+  <img src="https://img.shields.io/badge/-Portfolio-181717?style=for-the-badge&logo=github&logoColor=white">
 </a>
 
 <br><br>
